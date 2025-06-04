@@ -5,10 +5,29 @@ import twilio from "twilio";
 const app = express();
 dotenv.config();
 
-const client = twilio(process.env.TOKEN_SID, process.env.TOKEN_SECRET, {
-  accountSid: process.env.ACCOUNT_SID,
-});
+const client = twilio(
+  process.env.TWILIO_TOKEN_SID,
+  process.env.TWILIO_TOKEN_SECRET,
+  {
+    accountSid: process.env.TWILIO_ACCOUNT_SID,
+  }
+);
 
-app.listen(3000, () => {
-  console.log("Server is running on port 3000");
+const sendTestMessage = async () => {
+  client.messages
+    .create({
+      body: "Hello, world!",
+      from: process.env.TWILIO_PHONE_NUMBER,
+      to: process.env.MY_NUMBER,
+    })
+    .then((message) => {
+      console.log(message);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+app.listen(process.env.PORT, () => {
+  console.log(`Server is running on port ${process.env.PORT}`);
 });
